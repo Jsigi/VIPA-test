@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hundeverwaltung – SQL-Übersicht</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__content">
+      <p class="eyebrow">Hundeschule</p>
+      <h1>SQL-gestützte Verwaltung für Hunde, Besitzer & Kurse</h1>
+      <p class="lead">
+        Behalte Impfstatus, Teilnehmerlisten und Dokumente im Blick. Die Tabelle
+        unten liest die aktuell vorliegenden Datensätze aus einer relationalen
+        Datenbankstruktur aus.
+      </p>
+    </div>
+    <div class="hero__actions">
+      <button class="btn primary">Neuen Hund anlegen</button>
+      <button class="btn ghost">Kurs hinzufügen</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="card">
+      <div class="card__header">
+        <div>
+          <p class="eyebrow">SQL-Tabelle</p>
+          <h2>Aktive Übersicht</h2>
+          <p>Besitzer, Hunde, Impfstatus, Kursanmeldung und Dokumente.</p>
+        </div>
+        <div class="badge">Quelle: SQLite</div>
+      </div>
+      <div class="table-wrapper">
+        <table id="overview-table">
+          <thead>
+            <tr>
+              <th>Besitzer</th>
+              <th>Kontakt</th>
+              <th>Hund</th>
+              <th>Rasse</th>
+              <th>Impfstatus</th>
+              <th>Nächste Impfung</th>
+              <th>Kurs</th>
+              <th>Nächster Termin</th>
+              <th>Dokumente</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <div class="card__header">
+          <div>
+            <p class="eyebrow">SQL-Definition</p>
+            <h2>Produktive Tabellenstruktur</h2>
+            <p>Die vollständige SQLite-Struktur findest du in <code>sqlite_schema.sql</code>.</p>
+          </div>
+        </div>
+        <pre class="code">
+-- Auszug aus sqlite_schema.sql
+-- Fremdschlüssel aktivieren
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE owners (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE dogs (
+  id INTEGER PRIMARY KEY,
+  owner_id INTEGER NOT NULL REFERENCES owners(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  breed TEXT,
+  vaccinated BOOLEAN DEFAULT false,
+  next_vaccine_due DATE
+);
+        </pre>
+      </article>
+
+      <article class="card upload-card">
+        <div class="card__header">
+          <div>
+            <p class="eyebrow">Dokumente</p>
+            <h2>Impfausweis hochladen</h2>
+            <p>Lege Nachweise pro Hund ab und verknüpfe sie mit dem Profil.</p>
+          </div>
+        </div>
+        <form class="upload" id="upload-form">
+          <label for="dog-select">Hund auswählen</label>
+          <select id="dog-select"></select>
+
+          <label for="file-input" class="file-label">Datei wählen</label>
+          <input id="file-input" type="file" accept="application/pdf,image/*" />
+
+          <button class="btn primary" type="submit">Upload verbuchen</button>
+          <p class="hint">Uploads werden mit dem ausgewählten Hund verknüpft und in der SQLite-Tabelle abgelegt.</p>
+        </form>
+        <div class="uploads" id="upload-log"></div>
+      </article>
+
+      <article class="card tech-card">
+        <div class="card__header">
+          <div>
+            <p class="eyebrow">Technologien</p>
+            <h2>Stack-Empfehlung</h2>
+            <p>Alles, was du für die Umsetzung benötigst.</p>
+          </div>
+        </div>
+        <ul class="tech-list">
+          <li><strong>Frontend:</strong> HTML, CSS, JavaScript (hier Vanilla; React/Vue optional)</li>
+          <li><strong>Backend:</strong> Node.js oder Python (Express/FastAPI) für REST- oder GraphQL-APIs</li>
+          <li><strong>Datenbank:</strong> PostgreSQL oder SQLite für relationale Daten & Foreign Keys</li>
+          <li><strong>Storage:</strong> S3/Blob Storage oder Datenbank-Files für Dokument-Uploads</li>
+          <li><strong>Auth:</strong> JWT-basierte Session oder OAuth2, falls Zugänge nötig sind</li>
+          <li><strong>Infra:</strong> Docker-Container für lokale Entwicklung & Deployment</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Produktive Oberfläche für Hundeschule-Management. Passe sie nach Bedarf an.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
